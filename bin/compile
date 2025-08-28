@@ -26,7 +26,7 @@ chmod +x $FETCH_PATH
 if [ -f "$ENV_DIR/HEROKU_ANYCABLE_GO_VERSION" ]; then
   version=`cat $ENV_DIR/HEROKU_ANYCABLE_GO_VERSION`
 else
-  version="1.6.0"
+  version="1.6.4"
 fi
 
 if [ -f "$ENV_DIR/HEROKU_ANYCABLE_GO_REPO" ]; then
@@ -104,6 +104,10 @@ cp $ANYCABLE_GO_CACHE $BIN_PATH/$binary_name
 echo "-----> Setting permissions"
 chmod +x $BIN_PATH/$binary_name
 
-echo "-----> Verify that binary is working"
-# prior version 0.6 we had only --version flag
-$BIN_PATH/$binary_name -v || $BIN_PATH/$binary_name --version
+if [ -f "$ENV_DIR/HEROKU_ANYCABLE_GO_SKIP_VERSION_CHECK" ] && [ "$(cat $ENV_DIR/HEROKU_ANYCABLE_GO_SKIP_VERSION_CHECK)" = "1" ]; then
+  echo "-----> Skipping version check"
+else
+  echo "-----> Verify that binary is working"
+  # prior version 0.6 we had only --version flag
+  $BIN_PATH/$binary_name -v || $BIN_PATH/$binary_name --version
+fi
